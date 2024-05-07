@@ -23,7 +23,7 @@
     "lint": "eslint \"src/**/*.ts*\"",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
-    "test": "vitest",
+    "test": "vitest --ui",
     "test.coverage": "vitest run --coverage",
     "test.e2e": "playwright test",
     "test.e2e.debug": "playwright test --ui --project=chromium",

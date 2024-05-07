@@ -4,9 +4,7 @@ type OrgRepoResponse =
   paths["/repos/{owner}/{repo}"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export class GithubApi {
-  private token?: string;
-
-  constructor() {}
+  constructor(private token?: string) {}
 
   async getRepository(user: string, repo: string) {
     const headers: HeadersInit = {
