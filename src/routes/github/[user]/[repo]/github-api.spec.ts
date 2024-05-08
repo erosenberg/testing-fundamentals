@@ -1,14 +1,19 @@
-import { describe, it, vi } from "vitest";
+import { describe, it, Mock, vi, beforeEach } from "vitest";
 import { Fetch, GithubApi } from "./github-api";
 
 describe("github-api", () => {
+  let fetchMock: Mock<Parameters<Fetch>, ReturnType<Fetch>>;
+  let delayMock: Mock<[number], Promise<void>>;
+  let api: GithubApi;
+
+  beforeEach(() => {
+    fetchMock = vi.fn<Parameters<Fetch>, ReturnType<Fetch>>(mockPromise);
+    delayMock = vi.fn<[number], Promise<void>>(mockPromise);
+    api = new GithubApi("TOKEN", fetchMock, delayMock);
+  });
+
   describe("getRepository", () => {
     it("should return repository information", async ({ expect }) => {
-      const fetchMock = vi.fn<Parameters<Fetch>, ReturnType<Fetch>>(
-        mockPromise
-      );
-      const api = new GithubApi("TOKEN", fetchMock, vi.fn(mockPromise) as any);
-
       const responsePromise = api.getRepository("USERNAME", "REPOSITORY");
 
       expect(fetchMock).toHaveBeenCalledWith(
@@ -28,12 +33,6 @@ describe("github-api", () => {
     it("should timeout after x seconds with time out response", async ({
       expect,
     }) => {
-      const fetchMock = vi.fn<Parameters<Fetch>, ReturnType<Fetch>>(
-        mockPromise
-      );
-      const delayMock = vi.fn<[number], Promise<void>>(mockPromise);
-      const api = new GithubApi("TOKEN", fetchMock, delayMock);
-
       const responsePromise = api.getRepository("USERNAME", "REPOSITORY");
 
       expect(fetchMock).toHaveBeenCalledWith(
