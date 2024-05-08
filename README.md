@@ -1,65 +1,43 @@
-# Qwik City App ⚡️
+[![Frontend Masters](https://static.frontendmasters.com/assets/brand/logos/full.png)](https://frontendmasters.com/courses/web-app-testing/)
 
-- [Qwik Docs](https://qwik.builder.io/)
-- [Discord](https://qwik.builder.io/chat)
-- [Qwik GitHub](https://github.com/BuilderIO/qwik)
-- [@QwikDev](https://twitter.com/QwikDev)
-- [Vite](https://vitejs.dev/)
+This repo is a companion to the [Web App Testing course](https://frontendmasters.com/courses/web-app-testing/) on Frontend Masters.
 
----
 
-## Project Structure
+## Overview
 
-This project is using Qwik with [QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just an extra set of tools on top of Qwik to make it easier to build a full site, including directory-based routing, layouts, and more.
+There are two applications in this codebase. The `main` branch shows the final solution with all tests added. The `no-tests` branch has a version of each application without and tests and is the started point for the course. Individual checkpoint branches have been added (e.g. `lesson-1`) and are refrenced throughout the course.
 
-Inside your project, you'll see the following directory structure:
+## Installation & Setup
 
-```
-├── public/
-│   └── ...
-└── src/
-    ├── components/
-    │   └── ...
-    └── routes/
-        └── ...
-```
+To follow along with the course, clone the repository and checkout the `no-tests` branch. Then installed the dependencies with either Yarn or NPM and use `npm run dev` to start the server:
 
-- `src/routes`: Provides the directory-based routing, which can include a hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page. Additionally, `index.ts` files are endpoints. Please see the [routing docs](https://qwik.builder.io/qwikcity/routing/overview/) for more info.
-
-- `src/components`: Recommended directory for components.
-
-- `public`: Any static assets, like images, can be placed in the public directory. Please see the [Vite public directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more info.
-
-## Add Integrations and deployment
-
-Use the `npm run qwik add` command to add additional integrations. Some examples of integrations includes: Cloudflare, Netlify or Express Server, and the [Static Site Generator (SSG)](https://qwik.builder.io/qwikcity/guides/static-site-generation/).
+> [!NOTE]
+> We recommend using Node version 20 for this course (version 20.11.1 was used during the recording)
 
 ```shell
-npm run qwik add # or `yarn qwik add`
+git clone https://frontendmasters.com/courses/web-app-testing/
+cd testing-fundamentals
+git checkout no-tests
+npm install # or yarn
+npm run dev
 ```
+## Applications
 
-## Development
+After running the development server, you'll find the two applications here:
+- Repository Lookup: http://localhost:5137/github/
+- Clustering: http://localhost:5137/clustering/
 
-Development mode uses [Vite's development server](https://vitejs.dev/). The `dev` command will server-side render (SSR) the output during development.
+## Create a GitHub Personal Access Token
 
-```shell
-npm start # or `yarn start`
-```
+One of the examples uses the GitHub API to access public repo names for a user. You'll need to create a Personal Access Token and add it to the `.env` file:
 
-> Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
+1. Go to your [Settings -> Developer Settings -> Personal Access Tokens](https://github.com/settings/tokens)
+2. Use the menu to generate a "New Personal Access Token (classic)"
+3. Choose an expiration and give it Repo -> public_repo scope
+4. Click Generate Token at the bottom
+5. When the token is generated, copy/paste it into your `.env` file
+6. Restart your development server
 
-## Preview
+You should now be able to see repo information in the GitHub app: http://localhost:5173/github/mhevery/qwik/
 
-The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to preview a production build locally and should not be used as a production server.
 
-```shell
-npm run preview # or `yarn preview`
-```
-
-## Production
-
-The production build will generate client and server modules by running both client and server build commands. The build command will use Typescript to run a type check on the source code.
-
-```shell
-npm run build # or `yarn build`
-```
