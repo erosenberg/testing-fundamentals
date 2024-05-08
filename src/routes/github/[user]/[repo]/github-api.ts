@@ -1,5 +1,4 @@
 import type { paths } from "@octokit/openapi-types";
-
 type OrgRepoResponse =
   paths["/repos/{owner}/{repo}"]["get"]["responses"]["200"]["content"]["application/json"];
 
@@ -7,7 +6,8 @@ export type Fetch = typeof fetch;
 export class GithubApi {
   constructor(
     private token: string | undefined,
-    private fetch: Fetch = fetch
+    private fetch: Fetch,
+    private delay: (ms: number) => Promise<void>
   ) {}
 
   async getRepository(user: string, repo: string) {
@@ -19,14 +19,21 @@ export class GithubApi {
       headers["Authorization"] = "Bearer " + this.token;
     }
 
-    const response = await this.fetch(
-      `https://api.github.com/repos/${user}/${repo}`,
-      {
+    return Promise.race([
+      this.delay(4000).then(() => {
+        return {
+          response: "timeout",
+        };
+      }),
+      this.fetch(`https://api.github.com/repos/${user}/${repo}`, {
         headers,
-      }
-    );
-
-    const repository = (await response.json()) as OrgRepoResponse;
-    return repository;
+      }).then((response) => {
+        return response.json();
+      }),
+    ]);
   }
+}
+
+export function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
