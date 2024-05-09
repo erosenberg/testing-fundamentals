@@ -9,15 +9,23 @@ test("has title", async ({ page }) => {
 });
 
 test("it prints current parameters", async ({ page }) => {
-  // await page.goto("http://localhost:5173/clustering/?size=1000&distance=450");
-  // await expect(page.locator("span.size")).toHaveText("1000");
-  // await expect(page.locator("span.distance")).toHaveText("450");
-  // await expect(page.locator("span.min-cluster-size")).toHaveText("5");
   const clusterPage = new ClusterPage(page);
   await clusterPage.goto({ distance: 450, size: 1000, minClusterSize: 5 });
   await expect(clusterPage.size).toHaveText("1000");
   await expect(clusterPage.distance).toHaveText("450");
   await expect(clusterPage.minClusterSize).toHaveText("5");
+});
+
+test("it should print validation errors when out of bound parameters are passed in", async ({
+  page,
+}) => {
+  const clusterPage = new ClusterPage(page);
+  await clusterPage.goto();
+  clusterPage.setDistance(1);
+  clusterPage.submit();
+  await expect(clusterPage.distanceError).toHaveText(
+    "Distance must be at least 100"
+  );
 });
 
 // We can create "Page Objects" that are logical representations of what the page does.
@@ -61,5 +69,17 @@ class ClusterPage {
 
   get minClusterSize() {
     return this.page.locator("span.min-cluster-size");
+  }
+
+  async setDistance(distance: number) {
+    await this.page.fill("input[name=distance]", distance.toString());
+  }
+
+  get distanceError() {
+    return this.page.locator(".error.distance");
+  }
+
+  async submit() {
+    return this.page.click("button[type='submit']");
   }
 }
