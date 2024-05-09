@@ -4,16 +4,9 @@ type OrgRepoResponse =
 
 export type Fetch = typeof fetch;
 export class GithubApi {
-  constructor(
-    private token: string | undefined,
-    private fetch: Fetch,
-    private delay: (ms: number) => Promise<void>
-  ) {}
-
   async getRepositories(username: string) {
     let page = 1;
     const repositories: OrgRepoResponse[] = [];
-
     while (true) {
       const response = await this.fetch(
         `https://api.github.com/users/${username}/repos?per_page=30&page=${page}`,
@@ -26,9 +19,6 @@ export class GithubApi {
       );
       const json = await response.json();
       repositories.push(...json);
-      console.log(json);
-      console.log(repositories);
-
       if (json.length < 30) {
         break;
       }
@@ -36,6 +26,11 @@ export class GithubApi {
     }
     return repositories;
   }
+  constructor(
+    private token: string | undefined,
+    private fetch: Fetch = fetch,
+    private delay: (ms: number) => Promise<void> = delay
+  ) {}
 
   async getRepository(user: string, repo: string) {
     const headers: HeadersInit = {
