@@ -1,15 +1,23 @@
 import { test, expect, type Page } from "@playwright/test";
 
 test("has title", async ({ page }) => {
-  await page.goto("http://localhost:5173/clustering/");
-  await expect(page).toHaveTitle("Chicago Traffic Accidents Clustering");
+  const clusterPage = new ClusterPage(page);
+  await clusterPage.goto();
+  await expect(clusterPage.title).resolves.toMatch(
+    "Chicago Traffic Accidents Clustering"
+  );
 });
 
 test("it prints current parameters", async ({ page }) => {
-  await page.goto("http://localhost:5173/clustering/?size=1000&distance=450");
-  await expect(page.locator("span.size")).toHaveText("1000");
-  await expect(page.locator("span.distance")).toHaveText("450");
-  await expect(page.locator("span.min-cluster-size")).toHaveText("5");
+  // await page.goto("http://localhost:5173/clustering/?size=1000&distance=450");
+  // await expect(page.locator("span.size")).toHaveText("1000");
+  // await expect(page.locator("span.distance")).toHaveText("450");
+  // await expect(page.locator("span.min-cluster-size")).toHaveText("5");
+  const clusterPage = new ClusterPage(page);
+  await clusterPage.goto({ distance: 450, size: 1000, minClusterSize: 5 });
+  await expect(clusterPage.size).toHaveText("1000");
+  await expect(clusterPage.distance).toHaveText("450");
+  await expect(clusterPage.minClusterSize).toHaveText("5");
 });
 
 // We can create "Page Objects" that are logical representations of what the page does.
@@ -25,7 +33,7 @@ class ClusterPage {
     size?: number;
     distance?: number;
     minClusterSize?: number;
-  }) {
+  } = {}) {
     const url = new URL("http://localhost:5173/clustering/");
     if (size) {
       url.searchParams.set("size", size.toString());
